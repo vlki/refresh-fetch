@@ -61,9 +61,11 @@ fetch('/api/data', {
   })
 ```
 
-And now you want to have the original request repeated. And also if there is request called during the refreshing, you don't want to start refreshing second time, but just wait for the first refresh to complete and use the new token.
+And now you want to have the original request repeated. And also if there is request called during the refreshing, you don't want to start refreshing second time, but you just want to wait for the first refresh to complete and use the new token.
 
-With `refresh-fetch` you configure at least 3 parameters, `shouldRefreshToken`, `refreshToken` and `fetch`, and the refreshing works exactly like described. See it in action:
+Sigh. That's a lot you don't want to be writing in every app.
+
+With `refresh-fetch` you configure 3 parameters, `shouldRefreshToken`, `refreshToken` and `fetch`, and the refreshing works exactly like described. See it in action:
 
 ```js
 // api.js
