@@ -11,7 +11,7 @@ The following ES6 functions are required:
 
 ## Install
 
-(https://img.shields.io/npm/v/refresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/refresh-fetch)
+[![npm version](https://img.shields.io/npm/v/refresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/refresh-fetch)
 
 Add to your app using package manager:
 
