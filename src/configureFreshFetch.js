@@ -1,4 +1,4 @@
-function configureFreshFetch(configuration = {}) {
+function configureFreshFetch (configuration = {}) {
   const {
     refreshToken,
     shouldRefreshToken,
@@ -20,7 +20,7 @@ function configureFreshFetch(configuration = {}) {
                 })
                 .catch(refreshTokenError => {
                   refreshingTokenPromise = null
-                  reject()
+                  reject(refreshTokenError)
                 })
             })
           }

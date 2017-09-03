@@ -1,3 +1,5 @@
+/* global fetch */
+
 import merge from 'lodash/merge'
 
 const fetchJSON = (input, init) => {
@@ -5,11 +7,11 @@ const fetchJSON = (input, init) => {
     headers: {
       'Content-Type': 'application/json'
     }
-  }, init);
+  }, init)
 
   return fetch(input, initJson)
     .then(parseJSON)
-    .then(checkStatus);
+    .then(checkStatus)
 }
 
 const checkStatus = ({ response, body }) => {
@@ -24,8 +26,8 @@ const checkStatus = ({ response, body }) => {
 }
 
 const parseJSON = response => {
-  const isJsonResponse = response.headers.get('content-type')
-    && response.headers.get('content-type').toLowerCase().indexOf('application/json') >= 0;
+  const isJsonResponse = response.headers.get('content-type') &&
+    response.headers.get('content-type').toLowerCase().indexOf('application/json') >= 0
 
   if (isJsonResponse) {
     return response.json().then(body => ({ response, body }))
