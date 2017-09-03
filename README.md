@@ -9,6 +9,18 @@ The following ES6 functions are required:
 * [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 * [fetch](https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch)
 
+## Install
+
+Use your favorite package manager:
+
+```
+yarn add refresh-fetch
+```
+
+```
+npm install refresh-fetch --save
+```
+
 ## Example
 
 TODO
