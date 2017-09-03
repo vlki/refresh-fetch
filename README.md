@@ -11,7 +11,7 @@ The following ES6 functions are required:
 
 ## Install
 
-[![build status](https://img.shields.io/travis/heroku/refresh-fetch/master.svg?style=flat-square)](https://travis-ci.org/vlki/refresh-fetch) [![npm version](https://img.shields.io/npm/v/refresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/refresh-fetch)
+[![build status](https://img.shields.io/travis/vlki/refresh-fetch/master.svg?style=flat-square)](https://travis-ci.org/vlki/refresh-fetch) [![npm version](https://img.shields.io/npm/v/refresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/refresh-fetch)
 
 Add to your app using package manager:
 
