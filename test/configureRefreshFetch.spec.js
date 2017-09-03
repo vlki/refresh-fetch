@@ -1,0 +1,184 @@
+import { configureRefreshFetch } from '../src'
+
+describe('configureRefreshFetch', () => {
+  it('should call passed fetch with same params', () => {
+    const fetchMock = jest.fn(() => Promise.resolve())
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: error => false,
+      refreshToken: () => {},
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' })
+
+    expect(fetchMock.mock.calls).toEqual([['/foo', { method: 'POST' }]])
+  })
+
+  it('should reject with reason when request fails and not refreshing', done => {
+    const fetchMock = jest.fn(() => Promise.reject('I am reason'))
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => false, 
+      refreshToken: () => {},
+      fetch: fetchMock
+    });
+
+    fetch('/foo', { method: 'POST' }).catch(error => {
+      expect(error).toBe('I am reason');
+      done();
+    })
+  })
+
+  it('should call shouldRefreshToken with reason if fetch is rejected', done => {
+    const fetchMock = jest.fn(() => Promise.reject('I am reason'))
+    const shouldRefreshTokenSpy = jest.fn(() => false)
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: shouldRefreshTokenSpy,
+      refreshToken: () => {},
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' }).catch(() => {
+      expect(shouldRefreshTokenSpy.mock.calls).toEqual([['I am reason']]);
+      done();
+    })
+  })
+
+  it('should call refreshToken when request fails and shouldRefreshToken returns true', done => {
+    const fetchMock = jest.fn(() => Promise.reject('I am reason'));
+    const refreshTokenSpy = jest.fn(() => Promise.reject());
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => true,
+      refreshToken: refreshTokenSpy,
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' }).catch(error => {
+      expect(refreshTokenSpy.mock.calls).toEqual([[]]);
+      done()
+    })
+  })
+
+  it('should reject with original reason when request as well as refreshToken fails', done => {
+    const fetchMock = jest.fn(() => Promise.reject('I am reason'));
+    const refreshTokenMock = jest.fn(() => Promise.reject('Other reason'));
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => true,
+      refreshToken: refreshTokenMock,
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' }).catch(error => {
+      expect(error).toEqual('I am reason');
+      done()
+    })
+  })
+
+  it('should repeat call to fetch with same params after successful token refresh', done => {
+    const fetchMock = jest.fn()
+      .mockReturnValueOnce(Promise.reject('Token has expired'))
+      .mockReturnValueOnce(Promise.resolve('Some data'));
+    
+    const refreshTokenMock = jest.fn(() => Promise.resolve('New token'));
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => true,
+      refreshToken: refreshTokenMock,
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' }).then(() => {
+      expect(fetchMock.mock.calls).toEqual([
+        ['/foo', { method: 'POST' }],
+        ['/foo', { method: 'POST' }]
+      ])
+      done()
+    })
+  })
+
+  it('should resolve with result of repeated fetch call', done => {
+    const fetchMock = jest.fn()
+      .mockReturnValueOnce(Promise.reject('Token has expired'))
+      .mockReturnValueOnce(Promise.resolve('Some data'));
+    
+    const refreshTokenMock = jest.fn(() => Promise.resolve('New token'));
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => true,
+      refreshToken: refreshTokenMock,
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' }).then(data => {
+      expect(data).toBe('Some data');
+      done();
+    })
+  })
+
+  it('should not call refreshToken second time when already refreshing', done => {
+    const fetchMock = jest.fn()
+      .mockReturnValueOnce(Promise.reject('Token has expired'))
+      .mockReturnValueOnce(Promise.reject('Token has expired'))
+      .mockReturnValueOnce(Promise.resolve('Some data'))
+      .mockReturnValueOnce(Promise.resolve('Some data'))
+
+    let refreshTokenPromiseResolve;
+    const refreshTokenMock = jest.fn(() => new Promise(resolve => {
+      refreshTokenPromiseResolve = resolve
+    }));
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => true,
+      refreshToken: refreshTokenMock,
+      fetch: fetchMock
+    })
+
+    const fetch1 = fetch('/foo', { method: 'POST' });
+    const fetch2 = fetch('/bar', { method: 'POST' });
+
+    process.nextTick(() => refreshTokenPromiseResolve())
+
+    Promise.all([fetch1, fetch2]).then(() => {
+      expect(refreshTokenMock.mock.calls).toEqual([[]]);
+      done();
+    });
+  })
+
+  it('should wait with all fetches for completed token refresh', done => {
+    const fetchMock = jest.fn()
+      .mockReturnValueOnce(Promise.reject('Token has expired'))
+      .mockReturnValueOnce(Promise.reject('Token has expired'))
+
+    let refreshTokenPromiseResolve;
+    const refreshTokenMock = jest.fn(() => new Promise(resolve => {
+      refreshTokenPromiseResolve = resolve
+    }));
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => true,
+      refreshToken: refreshTokenMock,
+      fetch: fetchMock
+    })
+
+    const fetch1 = fetch('/foo', { method: 'POST' });
+    const fetch2 = fetch('/bar', { method: 'POST' });
+
+    process.nextTick(() => {
+      fetchMock
+        .mockReturnValueOnce(Promise.resolve('Some data'))
+        .mockReturnValueOnce(Promise.resolve('Some data'))
+
+      refreshTokenPromiseResolve();
+
+      Promise.all([fetch1, fetch2]).then(([data1, data2]) => {
+        expect(data1).toBe('Some data')
+        expect(data2).toBe('Some data')
+        done();
+      });
+    })
+  })
+})

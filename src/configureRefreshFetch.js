@@ -2,7 +2,6 @@ function configureRefreshFetch(configuration = {}) {
   const {
     refreshToken,
     shouldRefreshToken,
-    addTokenToRequest,
     fetch
   } = configuration
 
