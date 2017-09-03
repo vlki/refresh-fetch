@@ -11,7 +11,7 @@ The following ES6 functions are required:
 
 ## Install
 
-Use your favorite package manager:
+Add to your app using package manager:
 
 ```
 yarn add refresh-fetch
