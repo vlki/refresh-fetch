@@ -17,6 +17,13 @@
   "files": [
     "lib"
   ],
+  "keywords": [
+    "api",
+    "fetch",
+    "auth",
+    "token",
+    "refresh"
+  ],
   "author": "Jan Vlcek <vlki@vlki.cz>",
   "license": "MIT",
   "homepage": "https://github.com/vlki/fresh-fetch",
