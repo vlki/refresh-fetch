@@ -1,0 +1,26 @@
+{
+  "name": "refresh-fetch",
+  "version": "0.1.0",
+  "main": "./lib/index.js",
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "clean": "rimraf lib dist coverage",
+    "prepublish": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vlki/refresh-fetch.git"
+  },
+  "author": "Jan Vlcek <vlki@vlki.cz>",
+  "license": "MIT",
+  "homepage": "https://github.com/vlki/refresh-fetch",
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rimraf": "^2.6.1"
+  }
+}
