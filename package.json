@@ -1,5 +1,5 @@
 {
-  "name": "refresh-fetch",
+  "name": "fresh-fetch",
   "description": "Wrapper around fetch capable of graceful authentication token refreshing.",
   "version": "0.1.2",
   "main": "./lib/index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vlki/refresh-fetch.git"
+    "url": "https://github.com/vlki/fresh-fetch.git"
   },
   "files": [
     "lib"
   ],
   "author": "Jan Vlcek <vlki@vlki.cz>",
   "license": "MIT",
-  "homepage": "https://github.com/vlki/refresh-fetch",
+  "homepage": "https://github.com/vlki/fresh-fetch",
   "dependencies": {
     "lodash": "^4.17.4"
   },

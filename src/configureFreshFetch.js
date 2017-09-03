@@ -1,4 +1,4 @@
-function configureRefreshFetch(configuration = {}) {
+function configureFreshFetch(configuration = {}) {
   const {
     refreshToken,
     shouldRefreshToken,
@@ -38,4 +38,4 @@ function configureRefreshFetch(configuration = {}) {
   }
 }
 
-export default configureRefreshFetch
+export default configureFreshFetch

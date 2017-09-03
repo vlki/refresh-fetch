@@ -1,4 +1,4 @@
-# Refresh Fetch
+# Fresh Fetch
 
 Wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch) capable of graceful authentication token refreshing.
 
@@ -11,16 +11,16 @@ The following ES6 functions are required:
 
 ## Install
 
-[![build status](https://img.shields.io/travis/vlki/refresh-fetch/master.svg?style=flat-square)](https://travis-ci.org/vlki/refresh-fetch) [![npm version](https://img.shields.io/npm/v/refresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/refresh-fetch)
+[![build status](https://img.shields.io/travis/vlki/fresh-fetch/master.svg?style=flat-square)](https://travis-ci.org/vlki/fresh-fetch) [![npm version](https://img.shields.io/npm/v/fresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/fresh-fetch)
 
 Add to your app using package manager:
 
 ```
-yarn add refresh-fetch
+yarn add fresh-fetch
 ```
 
 ```
-npm install refresh-fetch --save
+npm install fresh-fetch --save
 ```
 
 ## Example
@@ -67,7 +67,7 @@ And now you want to have the original request repeated. And also if there is req
 
 Sigh. That's a lot you don't want to be writing in every app.
 
-With `refresh-fetch` you configure 3 parameters, `shouldRefreshToken`, `refreshToken` and `fetch`, and the refreshing works exactly like described. See it in action:
+With `fresh-fetch` you configure 3 parameters, `shouldRefreshToken`, `refreshToken` and `fetch`, and the refreshing works exactly like described. See it in action:
 
 ```js
 // api.js
@@ -80,7 +80,7 @@ import merge from 'lodash/merge'
 //   * Parses response as JSON when Content-Type: application/json header is
 //     present in response headers
 //   * Converts non-success responses (HTTP status code >= 300) to errors
-import { configureRefreshFetch, fetchJSON } from 'refresh-fetch'
+import { configureFreshFetch, fetchJSON } from 'fresh-fetch'
 
 // Provide your favorite token saving -- to cookies, local storage, ...
 const retrieveToken = () => { /* ... */ }
@@ -131,7 +131,7 @@ const fetchJSONWithToken = (input, init) => {
   return fetchJSON(input, initWithToken)
 }
 
-export default configureRefreshFetch({
+export default configureFreshFetch({
   shouldRefreshToken,
   refreshToken,
   fetch: fetchJSONWithToken,

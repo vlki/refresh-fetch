@@ -1,7 +1,7 @@
-import configureRefreshFetch from './configureRefreshFetch'
+import configureFreshFetch from './configureFreshFetch'
 import fetchJSON from './fetchJSON'
 
 export {
-  configureRefreshFetch,
+  configureFreshFetch,
   fetchJSON
 }
