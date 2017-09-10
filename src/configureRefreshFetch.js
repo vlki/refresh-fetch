@@ -1,4 +1,12 @@
-function configureRefreshFetch (configuration = {}) {
+// @flow
+
+type Configuration = {
+  refreshToken: () => Promise<void>,
+  shouldRefreshToken: (error: any) => boolean,
+  fetch: (url: any, options: Object) => Promise<any>
+}
+
+function configureRefreshFetch (configuration: Configuration) {
   const {
     refreshToken,
     shouldRefreshToken,
@@ -7,8 +15,8 @@ function configureRefreshFetch (configuration = {}) {
 
   let refreshingTokenPromise = null
 
-  return (input, init) => {
-    return fetch(input, init)
+  return (url: any, options: Object) => {
+    return fetch(url, options)
       .catch(error => {
         if (shouldRefreshToken(error)) {
           if (refreshingTokenPromise === null) {
@@ -26,7 +34,7 @@ function configureRefreshFetch (configuration = {}) {
           }
 
           return refreshingTokenPromise
-            .then(() => fetch(input, init))
+            .then(() => fetch(url, options))
             .catch(() => {
               // If refreshing fails, continue with original error
               throw error

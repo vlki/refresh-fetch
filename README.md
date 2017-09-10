@@ -25,6 +25,107 @@ npm install refresh-fetch --save
 
 ## Example
 
+```js
+// api.js
+import merge from 'lodash/merge'
+import Cookies from 'js-cookie'
+import { configureRefreshFetch, fetchJSON } from 'refresh-fetch'
+
+const COOKIE_NAME = 'MYAPP'
+
+const retrieveToken = () => Cookies.get(COOKIE_NAME)
+const saveToken = token => Cookies.set(COOKIE_NAME, token)
+const clearToken = () => Cookies.remove(COOKIE_NAME)
+
+const fetchJSONWithToken = (url, options = {}) => {
+  const token = retrieveToken()
+
+  let optionsWithToken = options
+  if (token != null) {
+    optionsWithToken = merge({}, options, {
+      headers: {
+        Authorization: `Bearer ${retrieveToken()}`
+      }
+    })
+  }
+
+  return fetchJSON(url, optionsWithToken)
+}
+
+const login = (email, password) => {
+  return fetchJSON('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({
+      email,
+      password
+    })
+  })
+    .then(response => {
+      saveToken(response.body.token)
+    })
+}
+
+const logout = () => {
+  return fetchJSONWithToken('/api/auth/logout', {
+    method: 'POST'
+  })
+    .then(() => {
+      clearToken()
+    })
+}
+
+const shouldRefreshToken = error =>
+  error.response.status === 401 &&
+  error.body.message === 'Token has expired'
+
+const refreshToken = () => {
+  return fetchJSONWithToken('/api/auth/refresh-token', {
+    method: 'POST'
+  })
+    .then(response => {
+      saveToken(response.body.token)
+    })
+    .catch(error => {
+      // Clear token and continue with the Promise catch chain
+      clearToken()
+      throw error
+    })
+}
+
+const fetch = configureRefreshFetch({
+  fetch: fetchJSONWithToken,
+  shouldRefreshToken,
+  refreshToken
+})
+
+export {
+  fetch,
+  login,
+  logout
+}
+```
+
+```js
+// myapp.js
+
+import { fetch, login, logout } from './api'
+
+fetch('/api/user/me')
+  .then(({ response, body }) => { /* Got the data! If token expired, it was renewed and saved. */ })
+  .catch(error => { /* Error getting data, probably not logged in */ })
+
+login('username', 'password')
+  .then(() => { /* Logged in, token saved to cookie */ })
+  .catch(error => { /* Error when logging in, probably wrong credentials */ })
+
+logout()
+  .then(() => { /* Logged out, token removed from cookie */ })
+  .catch(error => { /* Error while logging out */ })
+
+```
+
+## Motivation
+
 Imagine you have in your app a request to `/api/data` which needs authentication/authorization token in Authorization header like this:
 
 ```js
@@ -79,13 +180,29 @@ import merge from 'lodash/merge'
 //   * Automatically adds Content-Type: application/json to request headers
 //   * Parses response as JSON when Content-Type: application/json header is
 //     present in response headers
-//   * Converts non-success responses (HTTP status code >= 300) to errors
+//   * Converts non-ok responses to errors
 import { configureRefreshFetch, fetchJSON } from 'refresh-fetch'
 
 // Provide your favorite token saving -- to cookies, local storage, ...
 const retrieveToken = () => { /* ... */ }
 const saveToken = token => { /* ... */ }
 const clearToken = () => { /* ... */ }
+
+// Add token to the request headers
+const fetchJSONWithToken = (url, options = {}) => {
+  const token = retrieveToken()
+
+  let optionsWithToken = options
+  if (token != null) {
+    optionsWithToken = merge({}, options, {
+      headers: {
+        Authorization: `Bearer ${retrieveToken()}`
+      }
+    })
+  }
+
+  return fetchJSON(url, optionsWithToken)
+}
 
 // Decide whether this error returned from API means that we want
 // to try refreshing the token. error.response contains the fetch Response
@@ -96,11 +213,8 @@ const shouldRefreshToken = error =>
 
 // Do the actual token refreshing and update the saved token
 const refreshToken = () => {
-  return fetchJSON('/api/refresh-token', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${retrieveToken()}`
-    }
+  return fetchJSONWithToken('/api/refresh-token', {
+    method: 'POST'
   })
     .then(response => {
       saveToken(response.body.token)
@@ -114,24 +228,7 @@ const refreshToken = () => {
     })
 }
 
-// Add authentication header to the request, input and init
-// are the constructor parameters of Request object in Fetch API
-const fetchJSONWithToken = (input, init) => {
-  const token = retrieveToken()
-  let initWithToken = init
-
-  if (token !== null && token !== undefined) {
-    initWithToken = merge({}, init, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
-
-  return fetchJSON(input, initWithToken)
-}
-
-export default configureRefreshFetch({
+export const fetch = configureRefreshFetch({
   shouldRefreshToken,
   refreshToken,
   fetch: fetchJSONWithToken,
@@ -142,7 +239,7 @@ export default configureRefreshFetch({
 ```js
 // myapp.js
 
-import fetch from './api'
+import { fetch } from './api'
 
 // This API will be called with Bearer token in Authorization header and if it
 // returns 401 with message 'Token has expired', request to /api/refresh-token
