@@ -1,12 +1,12 @@
 /* eslint-env jest */
 
-import { configureFreshFetch } from '../src'
+import { configureRefreshFetch } from '../src'
 
-describe('configureFreshFetch', () => {
+describe('configureRefreshFetch', () => {
   it('should call passed fetch with same params', () => {
     const fetchMock = jest.fn(() => Promise.resolve())
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => false,
       refreshToken: () => {},
       fetch: fetchMock
@@ -20,7 +20,7 @@ describe('configureFreshFetch', () => {
   it('should reject with reason when request fails and not refreshing', done => {
     const fetchMock = jest.fn(() => Promise.reject(new Error('I am reason')))
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => false,
       refreshToken: () => {},
       fetch: fetchMock
@@ -37,7 +37,7 @@ describe('configureFreshFetch', () => {
     const fetchMock = jest.fn(() => Promise.reject(reason))
     const shouldRefreshTokenSpy = jest.fn(() => false)
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: shouldRefreshTokenSpy,
       refreshToken: () => {},
       fetch: fetchMock
@@ -53,7 +53,7 @@ describe('configureFreshFetch', () => {
     const fetchMock = jest.fn(() => Promise.reject(new Error('I am reason')))
     const refreshTokenSpy = jest.fn(() => Promise.reject(new Error()))
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => true,
       refreshToken: refreshTokenSpy,
       fetch: fetchMock
@@ -69,7 +69,7 @@ describe('configureFreshFetch', () => {
     const fetchMock = jest.fn(() => Promise.reject(new Error('I am reason')))
     const refreshTokenMock = jest.fn(() => Promise.reject(new Error('Other reason')))
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => true,
       refreshToken: refreshTokenMock,
       fetch: fetchMock
@@ -88,7 +88,7 @@ describe('configureFreshFetch', () => {
 
     const refreshTokenMock = jest.fn(() => Promise.resolve('New token'))
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => true,
       refreshToken: refreshTokenMock,
       fetch: fetchMock
@@ -110,7 +110,7 @@ describe('configureFreshFetch', () => {
 
     const refreshTokenMock = jest.fn(() => Promise.resolve('New token'))
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => true,
       refreshToken: refreshTokenMock,
       fetch: fetchMock
@@ -134,7 +134,7 @@ describe('configureFreshFetch', () => {
       refreshTokenPromiseResolve = resolve
     }))
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => true,
       refreshToken: refreshTokenMock,
       fetch: fetchMock
@@ -161,7 +161,7 @@ describe('configureFreshFetch', () => {
       refreshTokenPromiseResolve = resolve
     }))
 
-    const fetch = configureFreshFetch({
+    const fetch = configureRefreshFetch({
       shouldRefreshToken: () => true,
       refreshToken: refreshTokenMock,
       fetch: fetchMock
