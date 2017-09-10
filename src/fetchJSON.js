@@ -3,6 +3,8 @@
 
 import merge from 'lodash/merge'
 
+type ResponseBody = Object | null | string
+
 const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
   const jsonOptions = merge({
     headers: {
@@ -21,12 +23,12 @@ const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
     .then(checkStatus)
 }
 
-const getResponseBody = (response: Response): Promise<Object | string> => {
+const getResponseBody = (response: Response): Promise<ResponseBody> => {
   const contentType = response.headers.get('content-type')
   return contentType.indexOf('json') >= 0 ? response.text().then(tryParseJSON) : response.text()
 }
 
-const tryParseJSON = (json: string): ?Object => {
+const tryParseJSON = (json: string): Object | null => {
   if (!json) {
     return null
   }
@@ -38,7 +40,7 @@ const tryParseJSON = (json: string): ?Object => {
   }
 }
 
-function ResponseError (status: number, response: Response, body: Object | string) {
+function ResponseError (status: number, response: Response, body: ResponseBody) {
   this.name = 'ResponseError'
   this.status = status
   this.response = response
