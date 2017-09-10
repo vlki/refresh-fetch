@@ -3,15 +3,16 @@
 
 import merge from 'lodash/merge'
 
-const fetchJSON = (url: any, options: Object = {}) => {
+const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
   const jsonOptions = merge({
     headers: {
       'Content-Type': 'application/json'
     }
   }, options)
 
+  // $FlowIssue
   return fetch(url, jsonOptions)
-    .then((response: any): Promise<{ response: any, body: Object | string }> => {
+    .then((response: Response) => {
       return getResponseBody(response).then(body => ({
         response,
         body
@@ -20,7 +21,7 @@ const fetchJSON = (url: any, options: Object = {}) => {
     .then(checkStatus)
 }
 
-const getResponseBody = (response: any): Promise<Object | string> => {
+const getResponseBody = (response: Response): Promise<Object | string> => {
   const contentType = response.headers.get('content-type')
   return contentType.indexOf('json') >= 0 ? response.text().then(tryParseJSON) : response.text()
 }
@@ -37,7 +38,7 @@ const tryParseJSON = (json: string): ?Object => {
   }
 }
 
-function ResponseError (status: number, response: any, body: Object | string) {
+function ResponseError (status: number, response: Response, body: Object | string) {
   this.name = 'ResponseError'
   this.status = status
   this.response = response
