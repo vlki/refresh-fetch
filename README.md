@@ -23,6 +23,28 @@ yarn add refresh-fetch
 npm install refresh-fetch --save
 ```
 
+## Usage
+
+```js
+import { configureRefreshFetch } from 'refresh-fetch'
+
+const fetch = configureRefreshFetch({
+  // Pass fetch function you want to wrap, it should already be adding
+  // token to the request
+  fetch,
+  // shouldRefreshToken is called when API fetch fails and it should decide
+  // whether the response error means we need to refresh token
+  shouldRefreshToken: error => false,
+  // refreshToken should call the refresh token API, save the refreshed
+  // token and return promise -- resolving it when everything goes fine,
+  // rejecting it when refreshing fails for some reason
+  refreshToken: () => Promise.resolve()
+})
+
+// Use same as the original fetch
+fetch('/api-with-authentication', { method: 'POST' })
+```
+
 ## Example
 
 ```js
@@ -247,7 +269,6 @@ import { fetch } from './api'
 // repeated with the new token
 fetch('/api/data')
 ```
-
 
 ## License
 
