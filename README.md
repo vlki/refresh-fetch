@@ -28,7 +28,7 @@ npm install refresh-fetch --save
 ```js
 import { configureRefreshFetch } from 'refresh-fetch'
 
-const fetch = configureRefreshFetch({
+const refreshFetch = configureRefreshFetch({
   // Pass fetch function you want to wrap, it should already be adding
   // token to the request
   fetch,
@@ -42,7 +42,7 @@ const fetch = configureRefreshFetch({
 })
 
 // Use same as the original fetch
-fetch('/api-with-authentication', { method: 'POST' })
+refreshFetch('/api-with-authentication', { method: 'POST' })
 ```
 
 ## Example
@@ -66,7 +66,7 @@ const fetchJSONWithToken = (url, options = {}) => {
   if (token != null) {
     optionsWithToken = merge({}, options, {
       headers: {
-        Authorization: `Bearer ${retrieveToken()}`
+        Authorization: `Bearer ${token}`
       }
     })
   }
