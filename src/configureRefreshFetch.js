@@ -16,6 +16,14 @@ function configureRefreshFetch (configuration: Configuration) {
   let refreshingTokenPromise = null
 
   return (url: any, options: Object) => {
+    if (refreshingTokenPromise !== null) {
+      return refreshingTokenPromise
+        .then(() => fetch(url, options))
+        // Even if the refreshing fails, do the fetch so we reject with
+        // error of that request
+        .catch(() => fetch(url, options))
+    }
+
     return fetch(url, options)
       .catch(error => {
         if (shouldRefreshToken(error)) {

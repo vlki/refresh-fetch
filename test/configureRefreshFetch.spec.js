@@ -151,6 +151,30 @@ describe('configureRefreshFetch', () => {
     })
   })
 
+  it('should not fetch when token refreshing is in progress', done => {
+    const fetchMock = jest.fn()
+      .mockReturnValue(Promise.reject(new Error('Token has expired')))
+
+    const refreshTokenMock = jest.fn(() => new Promise())
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: () => true,
+      refreshToken: refreshTokenMock,
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' })
+
+    process.nextTick(() => {
+      fetch('/bar', { method: 'POST' })
+
+      expect(fetchMock.mock.calls).toEqual([
+        ['/foo', { method: 'POST' }]
+      ])
+      done()
+    })
+  })
+
   it('should wait with all fetches for completed token refresh', done => {
     const fetchMock = jest.fn()
       .mockReturnValueOnce(Promise.reject(new Error('Token has expired')))
