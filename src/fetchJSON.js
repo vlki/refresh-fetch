@@ -25,7 +25,7 @@ const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
 
 const getResponseBody = (response: Response): Promise<ResponseBody> => {
   const contentType = response.headers.get('content-type')
-  return contentType.indexOf('json') >= 0 ? response.text().then(tryParseJSON) : response.text()
+  return contentType && contentType.indexOf('json') >= 0 ? response.text().then(tryParseJSON) : response.text()
 }
 
 const tryParseJSON = (json: string): Object | null => {
