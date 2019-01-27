@@ -15,7 +15,6 @@ const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
     options
   )
 
-  // $FlowIssue
   return fetch(url, jsonOptions)
     .then((response: Response) => {
       return getResponseBody(response).then(body => ({
