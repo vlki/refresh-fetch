@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "node"
 script:
-  - yarn run lint && yarn run flow && yarn run test
+  - npm run lint && npm test

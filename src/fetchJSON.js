@@ -6,11 +6,14 @@ import merge from 'lodash/merge'
 type ResponseBody = Object | null | string
 
 const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
-  const jsonOptions = merge({
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }, options)
+  const jsonOptions = merge(
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    },
+    options
+  )
 
   // $FlowIssue
   return fetch(url, jsonOptions)
@@ -25,7 +28,9 @@ const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
 
 const getResponseBody = (response: Response): Promise<ResponseBody> => {
   const contentType = response.headers.get('content-type')
-  return contentType && contentType.indexOf('json') >= 0 ? response.text().then(tryParseJSON) : response.text()
+  return contentType && contentType.indexOf('json') >= 0
+    ? response.text().then(tryParseJSON)
+    : response.text()
 }
 
 const tryParseJSON = (json: string): Object | null => {
