@@ -39,11 +39,11 @@ function configureRefreshFetch (configuration: Configuration) {
         }
 
         return refreshingTokenPromise
-          .then(() => fetch(url, options))
           .catch(() => {
             // If refreshing fails, continue with original error
             throw error
           })
+          .then(() => fetch(url, options))
       } else {
         throw error
       }
