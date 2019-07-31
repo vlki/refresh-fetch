@@ -164,7 +164,7 @@ describe('configureRefreshFetch', () => {
       .fn()
       .mockReturnValue(Promise.reject(new Error('Token has expired')))
 
-    const refreshTokenMock = jest.fn(() => new Promise())
+    const refreshTokenMock = jest.fn(() => new Promise(() => {}))
 
     const fetch = configureRefreshFetch({
       shouldRefreshToken: () => true,
@@ -217,6 +217,26 @@ describe('configureRefreshFetch', () => {
         expect(data2).toBe('Some data')
         done()
       })
+    })
+  })
+
+  it('should reject after successful token refresh and errorneous response with that response', done => {
+    const fetchMock = jest
+      .fn()
+      .mockReturnValueOnce(Promise.reject(new Error('Token has expired')))
+      .mockReturnValueOnce(Promise.reject(new Error('Server error')))
+
+    const refreshTokenMock = jest.fn(() => Promise.resolve('New token'))
+
+    const fetch = configureRefreshFetch({
+      shouldRefreshToken: error => error.message === 'Token has expired',
+      refreshToken: refreshTokenMock,
+      fetch: fetchMock
+    })
+
+    fetch('/foo', { method: 'POST' }).catch(error => {
+      expect(error.message).toEqual('Server error')
+      done()
     })
   })
 })
