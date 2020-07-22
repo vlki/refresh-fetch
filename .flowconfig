@@ -8,6 +8,3 @@
 [lints]
 
 [options]
-suppress_comment=.*\\$FlowIssue
-suppress_comment=.*\\$FlowFixMe
-suppress_comment=.*\\$FlowIgnore
