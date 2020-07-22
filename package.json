@@ -1,7 +1,7 @@
 {
   "name": "refresh-fetch",
   "description": "Wrapper around fetch capable of graceful authentication token refreshing.",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "main": "./lib/index.js",
   "scripts": {
     "build": "babel src --out-dir lib",
