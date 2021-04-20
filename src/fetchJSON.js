@@ -6,7 +6,9 @@ import merge from 'lodash/merge'
 type ResponseBody = Object | null | string
 
 const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
-  const jsonOptions = merge(
+  // The Content-Type header describes the type of the body so should be
+  // omitted when there isn't one.
+  const fetchOptions = typeof (options.body) === 'undefined' ? options : merge(
     {
       headers: {
         'Content-Type': 'application/json'
@@ -15,7 +17,7 @@ const fetchJSON = (url: string | Request | URL, options: Object = {}) => {
     options
   )
 
-  return fetch(url, jsonOptions)
+  return fetch(url, fetchOptions)
     .then((response: Response) => {
       return getResponseBody(response).then(body => ({
         response,
