@@ -21,7 +21,8 @@ describe('fetchJSON', () => {
       })
       global.fetch.mockReturnValueOnce(Promise.resolve({
         clone: mockClone,
-        headers: new Headers()
+        headers: new Headers(),
+        ok: true
       }))
 
       const url = '/1'
@@ -43,7 +44,8 @@ describe('fetchJSON', () => {
       })
       global.fetch.mockReturnValueOnce(Promise.resolve({
         clone: mockClone,
-        headers: new Headers()
+        headers: new Headers(),
+        ok: true
       }))
 
       const url = '/2'
