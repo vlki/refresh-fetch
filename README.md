@@ -13,11 +13,7 @@ The following ES6 functions are required:
 
 ## Install
 
-Add to your app using package manager:
-
-```
-yarn add refresh-fetch
-```
+Add to your app using package manager, eg.:
 
 ```
 npm install refresh-fetch --save
