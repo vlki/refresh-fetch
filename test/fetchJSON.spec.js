@@ -1,5 +1,7 @@
 /* eslint-env jest */
 
+import { Headers } from 'whatwg-fetch'
+
 beforeEach(() => {
   const mockFetch = jest.fn()
   Object.defineProperty(global, 'fetch', { value: mockFetch, writable: true })
