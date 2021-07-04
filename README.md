@@ -1,5 +1,7 @@
 # Refresh Fetch
 
+[![build status](https://github.com/vlki/refresh-fetch/actions/workflows/build_lint_and_test.yml/badge.svg?branch=main)](https://github.com/vlki/refresh-fetch/actions/workflows/build_lint_and_test.yml) [![npm version](https://img.shields.io/npm/v/refresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/refresh-fetch) [![npm](https://img.shields.io/npm/dt/refresh-fetch.svg)](https://www.npmjs.com/package/refresh-fetch)
+
 Wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch) capable of graceful authentication token refreshing.
 
 For situations when there is API which issues authentication tokens on login endpoint, API requires you to add the authentication token to all requests, those tokens must be refreshed every X minutes, and you just want to call `fetch` and be abstracted away from the refreshing.
@@ -10,8 +12,6 @@ The following ES6 functions are required:
 * [fetch](https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch)
 
 ## Install
-
-[![build status](https://github.com/vlki/refresh-fetch/actions/workflows/build_lint_and_test.yml/badge.svg?branch=main)](https://github.com/vlki/refresh-fetch/actions/workflows/build_lint_and_test.yml) [![npm version](https://img.shields.io/npm/v/refresh-fetch.svg?style=flat-square)](https://www.npmjs.com/package/refresh-fetch) [![npm](https://img.shields.io/npm/dt/refresh-fetch.svg)](https://www.npmjs.com/package/refresh-fetch)
 
 Add to your app using package manager:
 
