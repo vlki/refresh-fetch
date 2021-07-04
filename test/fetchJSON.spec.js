@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { Headers } from 'whatwg-fetch'
+import { Headers } from 'node-fetch'
 
 beforeEach(() => {
   const mockFetch = jest.fn()
