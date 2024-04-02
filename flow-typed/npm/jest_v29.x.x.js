@@ -1,7 +1,7 @@
-// flow-typed signature: 5ddcf688200e3506308fdcfa78ca48d9
-// flow-typed version: 644a595e77/jest_v27.x.x/flow_>=v0.134.x
+// flow-typed signature: f3f75dec8a0c58e78c2a57e2f81e6f7f
+// flow-typed version: 00ecb7849a/jest_v29.x.x/flow_>=v0.201.x
 
-type JestMockFn<TArguments: $ReadOnlyArray<*>, TReturn> = {
+type JestMockFn<TArguments: $ReadOnlyArray<any>, TReturn> = {
   (...args: TArguments): TReturn,
   /**
    * An object for introspecting mock calls
@@ -13,6 +13,12 @@ type JestMockFn<TArguments: $ReadOnlyArray<*>, TReturn> = {
      * passed during the call.
      */
     calls: Array<TArguments>,
+    /**
+     * An array containing the call arguments of the last call that was made
+     * to this mock function. If the function was not called, it will return
+     * undefined.
+     */
+    lastCall: TArguments,
     /**
      * An array that contains all the object instances that have been
      * instantiated from this mock function.
@@ -160,6 +166,32 @@ type JestPromiseType = {
  * describe()
  */
 type JestTestName = string | Function;
+
+type FakeableAPI =
+  | 'Date'
+  | 'hrtime'
+  | 'nextTick'
+  | 'performance'
+  | 'queueMicrotask'
+  | 'requestAnimationFrame'
+  | 'cancelAnimationFrame'
+  | 'requestIdleCallback'
+  | 'cancelIdleCallback'
+  | 'setImmediate'
+  | 'clearImmediate'
+  | 'setInterval'
+  | 'clearInterval'
+  | 'setTimeout'
+  | 'clearTimeout';
+
+type FakeTimersConfig = {
+  advanceTimers?: boolean | number,
+  doNotFake?: Array<FakeableAPI>,
+  now?: number | Date,
+  timerLimit?: number,
+  legacyFakeTimers?: boolean,
+  ...
+};
 
 /**
  *  Plugin: jest-styled-components
@@ -627,7 +659,7 @@ interface JestExpectType {
    * Use .toBeInstanceOf(Class) to check that an object is an instance of a
    * class.
    */
-  toBeInstanceOf(cls: Class<*>): void;
+  toBeInstanceOf(cls: Class<any>): void;
   /**
    * .toBeNull() is the same as .toBe(null) but the error messages are a bit
    * nicer.
@@ -826,7 +858,7 @@ type JestObjectType = {
    * Returns a new, unused mock function. Optionally takes a mock
    * implementation.
    */
-  fn<TArguments: $ReadOnlyArray<*>, TReturn>(
+  fn<TArguments: $ReadOnlyArray<any>, TReturn>(
     implementation?: (...args: TArguments) => TReturn
   ): JestMockFn<TArguments, TReturn>,
   /**
@@ -919,7 +951,7 @@ type JestObjectType = {
    * (setTimeout, setInterval, clearTimeout, clearInterval, nextTick,
    * setImmediate and clearImmediate).
    */
-  useFakeTimers(mode?: 'modern' | 'legacy'): JestObjectType,
+  useFakeTimers(fakeTimersConfig?: FakeTimersConfig): JestObjectType,
   /**
    * Instructs Jest to use the real versions of the standard timer functions.
    */
@@ -1192,8 +1224,8 @@ declare var expect: {
   hasAssertions(): void,
   any(value: mixed): JestAsymmetricEqualityType,
   anything(): any,
-  arrayContaining(value: Array<mixed>): Array<mixed>,
-  objectContaining(value: Object): Object,
+  arrayContaining(value: $ReadOnlyArray<mixed>): Array<mixed>,
+  objectContaining(value: { ... }): Object,
   /** Matches any received string that contains the exact expected string. */
   stringContaining(value: string): string,
   stringMatching(value: string | RegExp): string,
